@@ -1,5 +1,7 @@
 # Dunginer
 
+![Game Screenshot](screenshots/game-screenshot.png)
+
 ## Description
 
 Dunginer is a 2D game where the player controls a blue knight navigating through a map filled with enemies such as zombies and slimes. The player must avoid lava and walls, attack enemies, and survive as long as possible.
@@ -38,7 +40,7 @@ npm install
 node server.js
 ```
 
-5. Open public/index.html in your browser to start the game.
+5. Open http://localhost:3000/ in your browser to play the game.
 
 File Structure public folder
 
