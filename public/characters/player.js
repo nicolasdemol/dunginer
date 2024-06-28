@@ -1,5 +1,6 @@
 import { Character } from "./character.js";
 import { Sprite } from "../utils/sprite.js";
+import { Timer } from "../utils/timer.js";
 
 export class Player extends Character {
   constructor(x, y, spriteManager, inputManager) {
@@ -8,6 +9,7 @@ export class Player extends Character {
     this.speed = 1;
     this.attacking = false; // Nouvel état pour suivre si le joueur est en train d'attaquer
     this.attackStarted = false; // Nouvel état pour suivre si l'attaque a déjà commencé
+    this.damageCooldown = new Timer(500); // Cooldown des dégâts en millisecondes
     this.sprites = {
       idle: new Sprite(
         this.spriteManager.getSprite("blue_knight_idle"),
@@ -27,21 +29,34 @@ export class Player extends Character {
         48,
         48
       ),
+      hit: new Sprite(
+        this.spriteManager.getSprite("blue_knight_hit"),
+        8,
+        16,
+        20
+      ),
     };
   }
 
-  update(enemies) {
-    super.update();
+  update(deltaTime, enemies) {
+    super.update(deltaTime);
+
+    if (this.state === "hit") {
+      if (this.hitDuration.isFinished()) {
+        this.state = "idle"; // Retourner à l'état idle après la durée du hit
+      }
+      return;
+    }
 
     if (this.attacking) {
-      this.handleAttackAnimation(enemies);
+      this.handleAttackAnimation(enemies, deltaTime);
     }
 
     let moved = false;
 
     if (
       this.inputManager.isMouseClicked() &&
-      this.attackCooldown === 0 &&
+      this.attackCooldown.isFinished() &&
       !this.attackStarted
     ) {
       this.startAttack(enemies);
@@ -76,10 +91,13 @@ export class Player extends Character {
       this.state = "idle";
     }
 
-    // Reset attackStarted state if mouse is not clicked
+    // Réinitialiser l'état attackStarted si la souris n'est pas cliquée
     if (!this.inputManager.isMouseClicked()) {
       this.attackStarted = false;
     }
+
+    // Mettre à jour le cooldown des dégâts
+    this.damageCooldown.update(deltaTime);
   }
 
   startAttack(enemies) {
@@ -89,13 +107,13 @@ export class Player extends Character {
     this.attacking = true;
     this.attackStarted = true; // Marquer l'attaque comme commencée
     this.attack(enemies);
-    this.attackCooldown = 20; // Temps de cooldown entre les attaques
+    this.attackCooldown.start(); // Réinitialiser le cooldown des attaques
   }
 
-  handleAttackAnimation(enemies) {
-    this.frameCount++;
-    if (this.frameCount >= 10) {
-      // Ajustez ce chiffre pour contrôler la vitesse de l'animation
+  handleAttackAnimation(enemies, deltaTime) {
+    this.frameCount += deltaTime;
+    if (this.frameCount >= 100) {
+      // Ajuster ce chiffre pour contrôler la vitesse de l'animation
       this.frame = (this.frame + 1) % this.sprites["attack"].columns;
       this.frameCount = 0;
 
@@ -110,7 +128,7 @@ export class Player extends Character {
   }
 
   attack(enemies) {
-    // Attaque les ennemis dans une certaine distance
+    // Attaquer les ennemis dans une certaine distance
     const attackRange = 20;
     enemies.forEach((enemy) => {
       const distanceX = enemy.x - this.x;
@@ -121,5 +139,15 @@ export class Player extends Character {
         enemy.takeDamage(this.attackPower);
       }
     });
+  }
+
+  takeDamage(damage) {
+    // Appliquer des dégâts seulement si le cooldown n'est pas actif
+    if (this.damageCooldown.isFinished()) {
+      super.takeDamage(damage);
+      this.frame = 0;
+      this.frameCount = 0;
+      this.damageCooldown.start(); // Réinitialiser le cooldown des dégâts
+    }
   }
 }

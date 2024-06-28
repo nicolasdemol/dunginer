@@ -1,4 +1,4 @@
-import { Sprite } from "../utils/sprite.js";
+import { Timer } from "../utils/timer.js";
 
 export class Character {
   constructor(x, y, spriteManager, health, attackPower) {
@@ -12,7 +12,8 @@ export class Character {
     this.frameCount = 0;
     this.health = health;
     this.attackPower = attackPower;
-    this.attackCooldown = 0;
+    this.attackCooldown = new Timer(500); // Cooldown des attaques en millisecondes
+    this.hitDuration = new Timer(1000); // Durée de l'état "hit" en millisecondes
     this.sprites = {};
   }
 
@@ -37,22 +38,27 @@ export class Character {
     sprite.draw(ctx, tileIndex, dx, dy, scale);
   }
 
-  update() {
-    if (this.attackCooldown > 0) {
-      this.attackCooldown--;
-    }
+  update(deltaTime) {
+    this.attackCooldown.update(deltaTime);
+    this.hitDuration.update(deltaTime);
 
-    this.frameCount++;
-    if (this.frameCount >= 10) {
+    this.frameCount += deltaTime;
+    if (this.frameCount >= 100) {
+      // Ajuster ce chiffre pour contrôler la vitesse de l'animation
       this.frame = (this.frame + 1) % this.sprites[this.state].columns;
       this.frameCount = 0;
     }
   }
 
   takeDamage(damage) {
-    this.health -= damage;
-    if (this.health <= 0) {
-      this.die();
+    if (this.hitDuration.isFinished()) {
+      this.health -= damage;
+      if (this.health <= 0) {
+        this.die();
+      } else {
+        this.state = "hit";
+        this.hitDuration.reset();
+      }
     }
   }
 

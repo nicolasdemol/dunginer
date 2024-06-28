@@ -1,7 +1,6 @@
 import { Player } from "./characters/player.js";
 import { Zombie } from "./characters/zombie.js";
 import { Camera } from "./utils/camera.js";
-import { Sprite } from "./utils/sprite.js";
 import { Map } from "./maps/map.js";
 import { AssetLoader } from "./utils/assetLoader.js";
 import { InputManager } from "./utils/inputManager.js";
@@ -23,6 +22,7 @@ class Game {
     this.mapConfig = {};
     this.map = null;
     this.camera = null;
+    this.lastTime = 0;
     this.init();
   }
 
@@ -35,8 +35,8 @@ class Game {
     this.map = new Map(this.mapConfig, this.spriteManager);
 
     this.player = new Player(
-      this.levelConfig.playerStart.x,
-      this.levelConfig.playerStart.y,
+      this.levelConfig.playerStart.x * this.mapConfig.tilewidth,
+      this.levelConfig.playerStart.y * this.mapConfig.tileheight,
       this.spriteManager,
       this.inputManager
     );
@@ -73,16 +73,16 @@ class Game {
   }
 
   startGame() {
-    this.currentFrame = 0;
-    this.gameLoop();
+    this.lastTime = performance.now();
+    this.gameLoop(this.lastTime);
   }
 
-  updateGame() {
-    this.player.update(this.enemies);
+  updateGame(deltaTime) {
+    this.player.update(deltaTime, this.enemies);
     this.camera.follow(this.player);
 
     this.enemies.forEach((enemy) => {
-      enemy.update(this.player);
+      enemy.update(deltaTime, this.player);
     });
 
     this.enemies = this.enemies.filter((enemy) => enemy.health > 0);
@@ -93,10 +93,14 @@ class Game {
     this.camera.render(this.ctx, this.map, this.player, this.enemies);
   }
 
-  gameLoop() {
-    this.updateGame();
+  gameLoop(timestamp) {
+    const deltaTime = timestamp - this.lastTime;
+    this.lastTime = timestamp;
+
+    this.updateGame(deltaTime);
     this.drawGame();
-    requestAnimationFrame(() => this.gameLoop());
+
+    requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
   }
 }
 

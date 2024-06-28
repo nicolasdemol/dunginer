@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -14,7 +13,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Route pour obtenir les niveaux
 app.get("/api/maps/:map", (req, res) => {
   const map = req.params.map;
   const filePath = path.join(__dirname, "maps", `map${map}.json`);
@@ -28,7 +26,6 @@ app.get("/api/maps/:map", (req, res) => {
   });
 });
 
-// Route pour obtenir les niveaux
 app.get("/api/levels/:level", (req, res) => {
   const level = req.params.level;
   const filePath = path.join(__dirname, "levels", `level${level}.json`);
@@ -42,6 +39,6 @@ app.get("/api/levels/:level", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
