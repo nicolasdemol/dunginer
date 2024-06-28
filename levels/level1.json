@@ -1,0 +1,15 @@
+{
+  "mapId": 1,
+  "playerStart": {
+    "x": 1000,
+    "y": 1000
+  },
+  "enemies": [
+    { "x": 4, "y": 4, "type": "zombie" },
+    { "x": 1, "y": 1, "type": "zombie" },
+    { "x": 1500, "y": 400, "type": "zombie" },
+    { "x": 400, "y": 800, "type": "zombie" },
+    { "x": 200, "y": 2000, "type": "zombie" },
+    { "x": 2000, "y": 400, "type": "zombie" }
+  ]
+}

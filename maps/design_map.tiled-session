@@ -1,0 +1,114 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "blue_knight_run.tsx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "#Tiles 1": {
+            "scaleInDock": 1
+        },
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "All Tiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 0.75
+        },
+        "blue_knight_attack.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "blue_knight_idle.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 11
+        },
+        "blue_knight_run.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 11
+        },
+        "level1..tmx": {
+            "scale": 1.423515625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 479.79803523407054,
+                "y": 319.63119477525925
+            }
+        },
+        "level1..tmx#All Tiles": {
+            "scaleInDock": 1
+        },
+        "level1.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 702,
+                "y": 435
+            }
+        },
+        "level1.tmx#All Tiles": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "level1.tmx#Tiles 1": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "map1.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1298,
+                "y": 1086
+            }
+        },
+        "map1.tmx#All structures": {
+            "scaleInDock": 1
+        },
+        "map1.tmx#Tiles 1": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/nycod/Documents/dev/js/invader/maps",
+    "last.externalTilesetPath": "C:/Users/nycod/Documents/dev/js/invader/maps",
+    "last.imagePath": "C:/Users/nycod/Documents/dev/js/invader/public/assets/characters",
+    "lastUsedTilesetExportFilter": "Fichiers de jeu de tuiles JSON (*.tsj *.json)",
+    "map.height": 200,
+    "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 200,
+    "openFiles": [
+        "map1.tmx",
+        "level1.tmx",
+        "blue_knight_idle.tsx",
+        "blue_knight_run.tsx"
+    ],
+    "project": "design_map.tiled-project",
+    "recentFiles": [
+        "map1.tmx",
+        "level1.tmx",
+        "blue_knight_idle.tsx",
+        "blue_knight_run.tsx",
+        "blue_knight_attack.tsx",
+        "level1..tmx",
+        "All Tiles.tsx"
+    ],
+    "resizeMap.removeObjects": true,
+    "tileset.embedInMap": true,
+    "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 32,
+        "width": 32
+    }
+}
