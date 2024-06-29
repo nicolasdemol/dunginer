@@ -8,6 +8,7 @@ export class Map {
     this.tileHeight = mapConfig.tileheight;
     this.spriteManager = spriteManager;
     this.layers = [];
+    this.damageTiles = {}; // Stocker les tuiles de dégâts
     this.sprites = {
       foreground_lava: new Sprite(
         this.spriteManager.getSprite("foreground_lava"),
@@ -17,6 +18,21 @@ export class Map {
       ),
     };
 
+    // Charger les propriétés des tuiles de dégâts
+    mapConfig.tilesets.forEach((tileset) => {
+      if (tileset.tiles) {
+        tileset.tiles.forEach((tile) => {
+          let damageProperty = tile.properties.find(
+            (prop) => prop.name === "damage"
+          );
+          if (damageProperty) {
+            this.damageTiles[tileset.firstgid + tile.id] = damageProperty.value;
+          }
+        });
+      }
+    });
+
+    // Charger les couches
     mapConfig.layers.forEach((layer, index) => {
       if (layer.type === "tilelayer") {
         const sprite = this.getCurrentSprite(mapConfig.tilesets[index].name);
@@ -42,5 +58,15 @@ export class Map {
 
   getCurrentSprite(spriteName) {
     return this.sprites[spriteName];
+  }
+
+  // Nouvelle méthode pour vérifier si une tuile est une tuile de dégâts
+  isDamageTile(tileGid) {
+    return this.damageTiles[tileGid] !== undefined;
+  }
+
+  // Nouvelle méthode pour obtenir les dégâts d'une tuile
+  getTileDamage(tileGid) {
+    return this.damageTiles[tileGid] || 0;
   }
 }

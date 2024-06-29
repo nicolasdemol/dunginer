@@ -4,6 +4,7 @@ export class Sprite {
     this.columns = columns || 0;
     this.tileWidth = tileWidth;
     this.tileHeight = tileHeight;
+    this.tileBase = 16;
   }
 
   draw(ctx, tileIndex, dx, dy, scale = 1) {
@@ -11,6 +12,7 @@ export class Sprite {
     const tileY = Math.floor(
       Math.floor(tileIndex / this.columns) * this.tileHeight
     );
+
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(
       this.image,

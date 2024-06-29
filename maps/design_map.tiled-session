@@ -49,8 +49,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 702,
-                "y": 435
+                "x": 699,
+                "y": 432
             }
         },
         "level1.tmx#All Tiles": {
@@ -65,8 +65,8 @@
             "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1298,
-                "y": 1086
+                "x": 1296,
+                "y": 1084
             }
         },
         "map1.tmx#All structures": {
@@ -77,9 +77,9 @@
             "scaleInEditor": 1
         }
     },
-    "last.exportedFilePath": "C:/Users/nycod/Documents/dev/js/invader/maps",
+    "last.exportedFilePath": "C:/Users/nycod/Documents/dev/js/dunginer/maps",
     "last.externalTilesetPath": "C:/Users/nycod/Documents/dev/js/invader/maps",
-    "last.imagePath": "C:/Users/nycod/Documents/dev/js/invader/public/assets/characters",
+    "last.imagePath": "C:/Users/nycod/Documents/dev/js/dunginer/assets/maps",
     "lastUsedTilesetExportFilter": "Fichiers de jeu de tuiles JSON (*.tsj *.json)",
     "map.height": 200,
     "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
@@ -94,11 +94,12 @@
         "blue_knight_run.tsx"
     ],
     "project": "design_map.tiled-project",
+    "property.type": "int",
     "recentFiles": [
-        "map1.tmx",
         "level1.tmx",
         "blue_knight_idle.tsx",
         "blue_knight_run.tsx",
+        "map1.tmx",
         "blue_knight_attack.tsx",
         "level1..tmx",
         "All Tiles.tsx"

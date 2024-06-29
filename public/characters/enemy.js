@@ -1,60 +1,35 @@
 import { Character } from "./character.js";
+import { Sprite } from "../utils/sprite.js";
 import { Timer } from "../utils/timer.js";
 
 export class Enemy extends Character {
   constructor(x, y, spriteManager, health, attackPower) {
-    super(x, y, spriteManager, health, attackPower);
-    this.speed = 0.5; // Vitesse par défaut pour tous les ennemis
-    this.engageDistance = 300; // Distance pour commencer à poursuivre
-    this.disengageDistance = 300; // Distance pour arrêter de poursuivre
-    this.attackDistance = 15; // Distance pour attaquer le joueur
-    this.hitDuration = new Timer(1000); // Durée de l'état "hit" en millisecondes
-    this.attackCooldown = new Timer(1000); // Cooldown des attaques en millisecondes
+    super(x, y, spriteManager, health, attackPower, "enemy");
+    this.speed = 0.5;
+    this.engageDistance = 200;
+    this.disengageDistance = 300;
+    this.attackDistance = 20;
+    this.damageCooldown = new Timer(1000);
+    this.attackCooldown = new Timer(500);
+    this.sprites = {
+      idle: new Sprite(this.spriteManager.getSprite("enemy_idle"), 8, 16, 16),
+      run: new Sprite(this.spriteManager.getSprite("enemy_run"), 8, 16, 17),
+      attack: new Sprite(
+        this.spriteManager.getSprite("enemy_attack"),
+        8,
+        48,
+        48
+      ),
+      hit: new Sprite(this.spriteManager.getSprite("enemy_hit"), 8, 16, 20),
+    };
   }
 
-  update(deltaTime, player) {
-    super.update(deltaTime);
-
-    if (this.state === "hit") {
-      if (this.hitDuration.isFinished()) {
-        this.state = "idle"; // Retourner à l'état idle après la durée du hit
-      }
-      return;
-    }
-
-    const distanceX = player.x - this.x;
-    const distanceY = player.y - this.y;
-    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-
-    if (distance < this.attackDistance && this.attackCooldown.isFinished()) {
-      this.startAttack(player);
-    } else if (this.state !== "attack" && distance < this.engageDistance) {
-      this.moveTowards(player);
-    } else if (
-      distance > this.disengageDistance ||
-      this.attackCooldown.isFinished()
-    ) {
-      this.state = "idle"; // Retour à l'état idle
-    }
-    this.attackCooldown.update(deltaTime);
-  }
-
-  startAttack(player) {
-    this.state = "attack";
-    this.frame = 0;
-    this.frameCount = 0;
-    this.attack(player);
-    this.attackCooldown.start(); // Réinitialiser le cooldown des attaques
-  }
-
-  moveTowards(player) {
+  handleMovement(player) {
     const distanceX = player.x - this.x;
     const distanceY = player.y - this.y;
     const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
     if (distanceX !== 0 || distanceY !== 0) {
-      this.state = "run";
-
       const moveX = (distanceX / distance) * this.speed;
       const moveY = (distanceY / distance) * this.speed;
 
@@ -66,12 +41,10 @@ export class Enemy extends Character {
       } else {
         this.direction = distanceY > 0 ? "down" : "up";
       }
-    } else {
-      this.state = "idle";
     }
   }
 
-  attack(player) {
-    player.takeDamage(this.attackPower);
+  update(deltaTime, player) {
+    super.update(deltaTime, [player]);
   }
 }

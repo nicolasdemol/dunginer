@@ -1,20 +1,45 @@
 import { Timer } from "../utils/timer.js";
+import { StateMachine } from "../states/stateMachine.js";
+import { IdleState } from "../states/idleState.js";
+import { RunState } from "../states/runState.js";
+import { AttackState } from "../states/attackState.js";
+import { HitState } from "../states/hitState.js";
 
 export class Character {
-  constructor(x, y, spriteManager, health, attackPower) {
+  constructor(x, y, spriteManager, health, attackPower, type) {
     this.x = x;
     this.y = y;
     this.spriteManager = spriteManager;
-    this.direction = "down";
+    this.health = health;
+    this.attackPower = attackPower;
+    this.attackDistance = 30;
     this.state = "idle";
     this.frame = 0;
     this.speed = 1;
     this.frameCount = 0;
-    this.health = health;
-    this.attackPower = attackPower;
-    this.attackCooldown = new Timer(500); // Cooldown des attaques en millisecondes
-    this.hitDuration = new Timer(1000); // Durée de l'état "hit" en millisecondes
+    this.frameDuration = 100;
+    this.attackCooldown = new Timer(500);
+    this.damageCooldown = new Timer(500);
     this.sprites = {};
+    this.stateMachine = new StateMachine(this);
+    this.type = type;
+
+    this.initStates();
+    this.stateMachine.setState("idle"); // Définir l'état initial ici
+  }
+
+  initStates() {
+    this.stateMachine.addState("idle", new IdleState(this));
+    this.stateMachine.addState("run", new RunState(this));
+    this.stateMachine.addState("attack", new AttackState(this));
+    this.stateMachine.addState("hit", new HitState(this));
+  }
+
+  update(deltaTime, entities) {
+    this.attackCooldown.update(deltaTime);
+    this.damageCooldown.update(deltaTime);
+    this.stateMachine.update(deltaTime, entities);
+    this.updateAnimation(deltaTime);
   }
 
   render(ctx) {
@@ -22,44 +47,40 @@ export class Character {
     const tileIndex = this.getTileIndex();
     const scale = 1.4;
 
-    const offsetX =
-      (this.sprites["attack"].tileWidth - this.sprites["idle"].tileWidth) / 2;
-    const offsetY =
-      (this.sprites["attack"].tileHeight - this.sprites["idle"].tileHeight) / 2;
-
-    let dx = Math.round(this.x);
-    let dy = Math.round(this.y);
-
-    if (this.state === "attack") {
-      dx -= Math.round(offsetX * scale);
-      dy -= Math.round(offsetY * scale);
-    }
+    const dx = Math.round(this.x - (sprite.tileWidth * scale) / 2);
+    const dy = Math.round(this.y - (sprite.tileHeight * scale) / 2);
 
     sprite.draw(ctx, tileIndex, dx, dy, scale);
   }
 
-  update(deltaTime) {
-    this.attackCooldown.update(deltaTime);
-    this.hitDuration.update(deltaTime);
-
+  updateAnimation(deltaTime) {
     this.frameCount += deltaTime;
-    if (this.frameCount >= 100) {
-      // Ajuster ce chiffre pour contrôler la vitesse de l'animation
+    if (this.frameCount >= this.frameDuration) {
       this.frame = (this.frame + 1) % this.sprites[this.state].columns;
       this.frameCount = 0;
     }
   }
 
   takeDamage(damage) {
-    if (this.hitDuration.isFinished()) {
-      this.health -= damage;
-      if (this.health <= 0) {
-        this.die();
-      } else {
-        this.state = "hit";
-        this.hitDuration.reset();
-      }
+    this.health -= damage;
+    console.log(`Heath ${this.type}`, this.health);
+    if (this.health <= 0) {
+      this.die();
+    } else {
+      this.stateMachine.setState("hit");
     }
+  }
+
+  attack(entities) {
+    entities.forEach((entity) => {
+      const distanceX = entity.x - this.x;
+      const distanceY = entity.y - this.y;
+      const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+      if (distance < this.attackDistance) {
+        entity.takeDamage(this.attackPower);
+      }
+    });
   }
 
   die() {
