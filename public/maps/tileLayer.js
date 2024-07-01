@@ -35,4 +35,16 @@ export class TileLayer {
       }
     }
   }
+
+  getTileGidAt(col, row) {
+    if (
+      row >= 0 &&
+      row < this.mapTiles.length &&
+      col >= 0 &&
+      col < this.mapTiles[row].length
+    ) {
+      return this.mapTiles[row][col];
+    }
+    return null;
+  }
 }

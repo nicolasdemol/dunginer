@@ -46,9 +46,9 @@ class Game {
       const y = enemyData.y * this.mapConfig.tileheight;
 
       if (enemyData.type === "zombie") {
-        this.enemies.push(new Zombie(x, y, this.spriteManager));
+        this.enemies.push(new Zombie(x, y, this.spriteManager, this.map));
       } else if (enemyData.type === "slime") {
-        this.enemies.push(new Slime(x, y, this.spriteManager));
+        this.enemies.push(new Slime(x, y, this.spriteManager, this.map));
       }
     });
 
@@ -92,11 +92,11 @@ class Game {
   }
 
   updateGame(deltaTime) {
-    this.player.update(deltaTime, this.enemies);
+    this.player.update(deltaTime, this.enemies, this.map);
     this.camera.follow(this.player);
 
     this.enemies.forEach((enemy) => {
-      enemy.update(deltaTime, this.player);
+      enemy.update(deltaTime, this.player, this.map);
     });
 
     this.enemies = this.enemies.filter((enemy) => enemy.health > 0);

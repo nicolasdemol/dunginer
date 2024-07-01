@@ -2,8 +2,8 @@ import { Enemy } from "./enemy.js";
 import { Sprite } from "../utils/sprite.js";
 
 export class Zombie extends Enemy {
-  constructor(x, y, spriteManager) {
-    super(x, y, spriteManager, 30, 10); // Santé et puissance d'attaque pour le zombie
+  constructor(x, y, spriteManager, map) {
+    super(x, y, spriteManager, 30, 10, map); // Santé et puissance d'attaque pour le zombie
     this.initSprites();
   }
 

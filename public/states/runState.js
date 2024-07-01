@@ -10,8 +10,7 @@ export class RunState extends State {
     this.character.state = "run";
   }
 
-  update(deltaTime, entities) {
-  }
+  update(deltaTime, entities) {}
 }
 
 export class PlayerRunState extends RunState {

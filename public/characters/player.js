@@ -12,10 +12,11 @@ export class Player extends Character {
     super(x, y, spriteManager, 100, 10, "player");
     this.inputManager = inputManager;
     this.speed = 2;
-    this.damageCooldown = new Timer(500);
+    this.damageCooldown = new Timer(1000);
     this.attackCooldown = new Timer(500);
     this.attackDistance = 40;
     this.collisionLayer = "player";
+    this.originalSpeed = this.speed;
 
     this.initSprites();
     this.initStates();
@@ -99,13 +100,6 @@ export class Player extends Character {
       this.y = newY;
     }
 
-    console.log("Player bounding box:", this.getBoundingBox());
-    console.log(
-      "Enemy bounding boxes:",
-      enemies.map((e) => e.getBoundingBox())
-    );
-    console.log("Collision detected:", collisionDetected);
-
     if (isMoving && this.state !== "attack" && this.state !== "hit") {
       this.stateMachine.setState("run");
     } else if (!isMoving && this.state !== "attack" && this.state !== "hit") {
@@ -115,9 +109,22 @@ export class Player extends Character {
     return isMoving;
   }
 
-  update(deltaTime, enemies) {
+  // Nouvelle méthode pour vérifier et appliquer les dégâts des tuiles
+  checkTileDamage(map) {
+    const damage = map.getDamageAtPosition(this.x, this.y)  
+    if (
+      damage > 0 &&
+      this.state !== "hit" &&
+      this.damageCooldown.isFinished()
+    ) {
+      this.takeDamage(damage);
+    }
+  }
+
+  update(deltaTime, enemies, map) {
     super.update(deltaTime, enemies);
     this.handleMovement(enemies);
+    this.checkTileDamage(map);
   }
 
   resetActions() {

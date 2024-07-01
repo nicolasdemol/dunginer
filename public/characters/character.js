@@ -19,6 +19,8 @@ export class Character {
     this.frameDuration = 200;
     this.attackCooldown = new Timer(1000);
     this.damageCooldown = new Timer(500);
+    this.originalSpeed = this.speed; // Stocker la vitesse originale
+    this.isSlowed = false;
     this.sprites = {};
     this.stateMachine = new StateMachine(this);
     this.animationManager = new AnimationManager(this);
@@ -30,8 +32,18 @@ export class Character {
   update(deltaTime, entities) {
     this.attackCooldown.update(deltaTime);
     this.damageCooldown.update(deltaTime);
+
+    if (this.isSlowed) {
+      this.slowTimer.update(deltaTime);
+      if (this.slowTimer.isFinished()) {
+        this.resetSpeed(); // Réinitialiser la vitesse après la fin du ralentissement
+      }
+    }
+
     this.stateMachine.update(deltaTime, entities);
     this.animationManager.update(deltaTime);
+
+    this.validatePosition();
   }
 
   render(ctx) {
@@ -39,12 +51,12 @@ export class Character {
   }
 
   takeDamage(damage) {
-    this.health -= damage;
-    console.log(`Heath ${this.type}`, this.health);
-    if (this.health <= 0) {
-      this.die();
-    } else {
-      this.stateMachine.setState("hit");
+    if (this.state !== "hit") {
+      const hitState = this.stateMachine.states["hit"];
+      if (hitState && typeof hitState.setDamage === "function") {
+        hitState.setDamage(damage);
+        this.stateMachine.setState("hit");
+      }
     }
   }
 
@@ -75,5 +87,25 @@ export class Character {
       width: this.width,
       height: this.height,
     };
+  }
+
+  applySlow(factor, duration) {
+    this.speed *= factor; // Ralentir la vitesse
+    this.isSlowed = true;
+    this.slowTimer = new Timer(duration); // Réinitialiser le timer de ralentissement
+    this.slowTimer.reset();
+  }
+
+  resetSpeed() {
+    this.speed = this.originalSpeed; // Réinitialiser la vitesse à la valeur originale
+    this.isSlowed = false;
+  }
+
+  validatePosition() {
+    if (isNaN(this.x) || isNaN(this.y)) {
+      console.error("Invalid position:", this.x, this.y);
+      this.x = 0;
+      this.y = 0;
+    }
   }
 }
