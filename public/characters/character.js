@@ -6,6 +6,8 @@ export class Character {
   constructor(x, y, spriteManager, health, attackPower, type) {
     this.x = x;
     this.y = y;
+    this.width = 16; // Assurez-vous que la largeur est définie
+    this.height = 16; // Assurez-vous que la hauteur est définie
     this.spriteManager = spriteManager;
     this.health = health;
     this.attackPower = attackPower;
@@ -21,6 +23,7 @@ export class Character {
     this.stateMachine = new StateMachine(this);
     this.animationManager = new AnimationManager(this);
     this.direction = "down";
+    this.collisionLayer = "default";
     this.type = type;
   }
 
@@ -63,5 +66,14 @@ export class Character {
 
   getCurrentSprite() {
     return this.sprites[this.state];
+  }
+
+  getBoundingBox() {
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+    };
   }
 }

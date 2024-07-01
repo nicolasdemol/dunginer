@@ -5,6 +5,7 @@ import { EnemyIdleState } from "../states/idleState.js";
 import { EnemyRunState } from "../states/runState.js";
 import { AttackState } from "../states/attackState.js";
 import { HitState } from "../states/hitState.js";
+import { checkCollision } from "../utils/collision.js";
 
 export class Enemy extends Character {
   constructor(x, y, spriteManager, health, attackPower) {
@@ -15,6 +16,7 @@ export class Enemy extends Character {
     this.attackDistance = 20;
     this.damageCooldown = new Timer(1000);
     this.attackCooldown = new Timer(500);
+    this.collisionLayer = "enemy";
     this.initSprites();
     this.initStates();
     this.stateMachine.setState("idle");
@@ -36,18 +38,34 @@ export class Enemy extends Character {
     const distanceY = player.y - this.y;
     const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
+    let newX = this.x;
+    let newY = this.y;
+
     if (distanceX !== 0 || distanceY !== 0) {
       const moveX = (distanceX / distance) * this.speed;
       const moveY = (distanceY / distance) * this.speed;
 
-      this.x += moveX;
-      this.y += moveY;
+      newX += moveX;
+      newY += moveY;
 
       if (Math.abs(distanceX) > Math.abs(distanceY)) {
         this.direction = distanceX > 0 ? "right" : "left";
       } else {
         this.direction = distanceY > 0 ? "down" : "up";
       }
+    }
+
+    // Vérifiez les collisions avant de mettre à jour la position
+    const newBoundingBox = {
+      x: newX,
+      y: newY,
+      width: this.width,
+      height: this.height,
+    };
+
+    if (!checkCollision(newBoundingBox, player.getBoundingBox())) {
+      this.x = newX;
+      this.y = newY;
     }
   }
 

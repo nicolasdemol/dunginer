@@ -5,6 +5,7 @@ import { PlayerIdleState } from "../states/idleState.js";
 import { PlayerRunState } from "../states/runState.js";
 import { AttackState } from "../states/attackState.js";
 import { HitState } from "../states/hitState.js";
+import { checkCollision } from "../utils/collision.js";
 
 export class Player extends Character {
   constructor(x, y, spriteManager, inputManager) {
@@ -14,6 +15,8 @@ export class Player extends Character {
     this.damageCooldown = new Timer(500);
     this.attackCooldown = new Timer(500);
     this.attackDistance = 40;
+    this.collisionLayer = "player";
+
     this.initSprites();
     this.initStates();
     this.stateMachine.setState("idle");
@@ -45,29 +48,63 @@ export class Player extends Character {
     this.stateMachine.addState("hit", new HitState(this));
   }
 
-  handleMovement() {
+  handleMovement(enemies) {
     let isMoving = false;
 
+    let newX = this.x;
+    let newY = this.y;
+
     if (this.inputManager.isKeyPressed("left")) {
-      this.x -= this.speed;
+      newX -= this.speed;
       this.direction = "left";
       isMoving = true;
     }
     if (this.inputManager.isKeyPressed("right")) {
-      this.x += this.speed;
+      newX += this.speed;
       this.direction = "right";
       isMoving = true;
     }
     if (this.inputManager.isKeyPressed("up")) {
-      this.y -= this.speed;
+      newY -= this.speed;
       this.direction = "up";
       isMoving = true;
     }
     if (this.inputManager.isKeyPressed("down")) {
-      this.y += this.speed;
+      newY += this.speed;
       this.direction = "down";
       isMoving = true;
     }
+
+    // Vérifiez les collisions avant de mettre à jour la position
+    const newBoundingBox = {
+      x: newX,
+      y: newY,
+      width: this.width,
+      height: this.height,
+    };
+    let collisionDetected = false;
+
+    for (let enemy of enemies) {
+      if (
+        enemy.collisionLayer !== this.collisionLayer &&
+        checkCollision(newBoundingBox, enemy.getBoundingBox())
+      ) {
+        collisionDetected = true;
+        break;
+      }
+    }
+
+    if (!collisionDetected) {
+      this.x = newX;
+      this.y = newY;
+    }
+
+    console.log("Player bounding box:", this.getBoundingBox());
+    console.log(
+      "Enemy bounding boxes:",
+      enemies.map((e) => e.getBoundingBox())
+    );
+    console.log("Collision detected:", collisionDetected);
 
     if (isMoving && this.state !== "attack" && this.state !== "hit") {
       this.stateMachine.setState("run");
@@ -80,7 +117,7 @@ export class Player extends Character {
 
   update(deltaTime, enemies) {
     super.update(deltaTime, enemies);
-    this.handleMovement();
+    this.handleMovement(enemies);
   }
 
   resetActions() {
