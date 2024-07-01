@@ -6,6 +6,7 @@ export class HitState extends State {
   }
 
   enter() {
+    this.character.animationManager.setAnimation("hit");
     this.character.state = "hit";
     this.character.frame = 0;
     this.character.frameCount = 0;
@@ -13,7 +14,6 @@ export class HitState extends State {
   }
 
   update(deltaTime, entities) {
-    this.character.updateAnimation(deltaTime);
     if (this.character.damageCooldown.isFinished()) {
       this.character.stateMachine.setState("idle");
     }

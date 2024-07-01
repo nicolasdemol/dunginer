@@ -1,6 +1,10 @@
 import { Character } from "./character.js";
 import { Sprite } from "../utils/sprite.js";
 import { Timer } from "../utils/timer.js";
+import { EnemyIdleState } from "../states/idleState.js";
+import { EnemyRunState } from "../states/runState.js";
+import { AttackState } from "../states/attackState.js";
+import { HitState } from "../states/hitState.js";
 
 export class Enemy extends Character {
   constructor(x, y, spriteManager, health, attackPower) {
@@ -11,17 +15,20 @@ export class Enemy extends Character {
     this.attackDistance = 20;
     this.damageCooldown = new Timer(1000);
     this.attackCooldown = new Timer(500);
-    this.sprites = {
-      idle: new Sprite(this.spriteManager.getSprite("enemy_idle"), 8, 16, 16),
-      run: new Sprite(this.spriteManager.getSprite("enemy_run"), 8, 16, 17),
-      attack: new Sprite(
-        this.spriteManager.getSprite("enemy_attack"),
-        8,
-        48,
-        48
-      ),
-      hit: new Sprite(this.spriteManager.getSprite("enemy_hit"), 8, 16, 20),
-    };
+    this.initSprites();
+    this.initStates();
+    this.stateMachine.setState("idle");
+  }
+
+  initSprites() {
+    // Placeholder function to be overridden by subclasses
+  }
+
+  initStates() {
+    this.stateMachine.addState("idle", new EnemyIdleState(this));
+    this.stateMachine.addState("run", new EnemyRunState(this));
+    this.stateMachine.addState("attack", new AttackState(this));
+    this.stateMachine.addState("hit", new HitState(this));
   }
 
   handleMovement(player) {

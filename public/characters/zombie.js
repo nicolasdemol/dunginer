@@ -4,16 +4,29 @@ import { Sprite } from "../utils/sprite.js";
 export class Zombie extends Enemy {
   constructor(x, y, spriteManager) {
     super(x, y, spriteManager, 30, 10); // Santé et puissance d'attaque pour le zombie
-    this.sprites = {
-      idle: new Sprite(this.spriteManager.getSprite("zombie_idle"), 8, 16, 16),
-      run: new Sprite(this.spriteManager.getSprite("zombie_run"), 8, 16, 16),
-      attack: new Sprite(
-        this.spriteManager.getSprite("zombie_attack"),
-        8,
-        16,
-        16
-      ),
-      hit: new Sprite(this.spriteManager.getSprite("zombie_hit"), 1, 16, 16),
-    };
+    this.initSprites();
+  }
+
+  initSprites() {
+    const idleSprite = this.spriteManager.getSprite("zombie_idle");
+    const runSprite = this.spriteManager.getSprite("zombie_run");
+    const attackSprite = this.spriteManager.getSprite("zombie_attack");
+    const hitSprite = this.spriteManager.getSprite("zombie_hit");
+
+    if (!idleSprite || !runSprite || !attackSprite || !hitSprite) {
+      console.error("Failed to load one or more sprites for Zombie.");
+      return;
+    }
+
+    this.animationManager.addAnimation(
+      "idle",
+      new Sprite(idleSprite, 8, 16, 16)
+    );
+    this.animationManager.addAnimation("run", new Sprite(runSprite, 8, 16, 16));
+    this.animationManager.addAnimation(
+      "attack",
+      new Sprite(attackSprite, 8, 16, 16)
+    );
+    this.animationManager.addAnimation("hit", new Sprite(hitSprite, 1, 16, 16));
   }
 }

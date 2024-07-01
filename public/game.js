@@ -64,7 +64,21 @@ class Game {
       this.mapConfig.height * this.mapConfig.tileheight
     );
 
+    window.addEventListener("blur", () => this.onBlur());
+    window.addEventListener("focus", () => this.onFocus());
+
     this.startGame();
+  }
+
+  onBlur() {
+    console.log("Window lost focus. Resetting input states.");
+    this.inputManager.resetInputs();
+    this.player.resetActions();
+  }
+
+  onFocus() {
+    console.log("Window gained focus.");
+    // Vous pouvez également réinitialiser d'autres états si nécessaire
   }
 
   resizeCanvas() {

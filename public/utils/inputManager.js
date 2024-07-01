@@ -18,6 +18,7 @@ export class InputManager {
     window.addEventListener("keyup", (e) => this.handleKeyUp(e));
     window.addEventListener("mousedown", () => this.handleMouseDown());
     window.addEventListener("mouseup", () => this.handleMouseUp());
+    window.addEventListener("blur", () => this.resetInputs());
   }
 
   handleKeyDown(event) {
@@ -68,5 +69,15 @@ export class InputManager {
 
   isMouseClicked() {
     return this.mouse.clicked;
+  }
+
+  resetInputs() {
+    this.keys = {
+      left: false,
+      right: false,
+      up: false,
+      down: false,
+    };
+    this.mouse.clicked = false;
   }
 }
