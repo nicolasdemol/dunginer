@@ -59,4 +59,12 @@ export class AnimationManager {
     const directionIndex = directions.indexOf(direction);
     return directionIndex * sprite.columns + frame;
   }
+
+  isAnimationFinished() {
+    if (this.currentAnimation) {
+      const animation = this.animations[this.currentAnimation];
+      return animation.currentFrame === animation.sprite.columns - 1;
+    }
+    return false;
+  }
 }

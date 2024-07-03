@@ -11,6 +11,10 @@ export class RunState extends State {
   }
 
   update(deltaTime, entities) {}
+
+  exit() {
+    // No cleanup needed for death state
+  }
 }
 
 export class PlayerRunState extends RunState {

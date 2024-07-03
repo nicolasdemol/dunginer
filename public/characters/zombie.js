@@ -12,8 +12,15 @@ export class Zombie extends Enemy {
     const runSprite = this.spriteManager.getSprite("zombie_run");
     const attackSprite = this.spriteManager.getSprite("zombie_attack");
     const hitSprite = this.spriteManager.getSprite("zombie_hit");
+    const deathSprite = this.spriteManager.getSprite("zombie_death");
 
-    if (!idleSprite || !runSprite || !attackSprite || !hitSprite) {
+    if (
+      !idleSprite ||
+      !runSprite ||
+      !attackSprite ||
+      !hitSprite ||
+      !deathSprite
+    ) {
       console.error("Failed to load one or more sprites for Zombie.");
       return;
     }
@@ -28,5 +35,9 @@ export class Zombie extends Enemy {
       new Sprite(attackSprite, 8, 16, 16)
     );
     this.animationManager.addAnimation("hit", new Sprite(hitSprite, 1, 16, 16));
+    this.animationManager.addAnimation(
+      "death",
+      new Sprite(deathSprite, 8, 16, 48)
+    );
   }
 }

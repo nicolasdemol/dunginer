@@ -99,12 +99,49 @@ class Game {
       enemy.update(deltaTime, this.player, this.map);
     });
 
-    this.enemies = this.enemies.filter((enemy) => enemy.health > 0);
+    // Supprimer les ennemis morts
+    this.enemies = this.enemies.filter((enemy) => !enemy.isDead);
+
+    // Gérer la mort du joueur
+    if (this.player.isDead) {
+      // Gérer la mort du joueur (par exemple, afficher un écran de fin de jeu)
+      console.log("Game Over");
+    }
   }
 
   drawGame() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.camera.render(this.ctx, this.map, this.player, this.enemies);
+    this.drawHUD(); // Appel de la méthode pour dessiner le HUD
+  }
+
+  drawHUD() {
+    const ctx = this.ctx;
+    const playerHealth = this.player.health;
+    const maxHealth = 100;
+    const healthBarWidth = 200;
+    const healthBarHeight = 20;
+    const healthBarX = 20;
+    const healthBarY = 20;
+
+    // Dessiner la barre de vie de fond (vide)
+    ctx.fillStyle = "#444";
+    ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+    // Dessiner la barre de vie actuelle
+    ctx.fillStyle = "#f00";
+    ctx.fillRect(
+      healthBarX,
+      healthBarY,
+      (playerHealth / maxHealth) * healthBarWidth,
+      healthBarHeight
+    );
+
+    // Dessiner le contour de la barre de vie
+    ctx.strokeStyle = "#fff";
+    ctx.strokeRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+    // Dessiner le texte de la barre de vie
   }
 
   gameLoop(timestamp) {

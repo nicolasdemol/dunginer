@@ -5,6 +5,7 @@ import { EnemyIdleState } from "../states/idleState.js";
 import { EnemyRunState } from "../states/runState.js";
 import { AttackState } from "../states/attackState.js";
 import { HitState } from "../states/hitState.js";
+import { DeathState } from "../states/deathState.js";
 import { checkCollision } from "../utils/collision.js";
 
 export class Enemy extends Character {
@@ -31,9 +32,16 @@ export class Enemy extends Character {
     this.stateMachine.addState("run", new EnemyRunState(this));
     this.stateMachine.addState("attack", new AttackState(this));
     this.stateMachine.addState("hit", new HitState(this));
+    this.stateMachine.addState("death", new DeathState(this));
   }
 
   handleMovement(player) {
+    if (player.stateMachine.currentState.name === "death") {
+      // Arrêter le mouvement si le joueur est mort
+      this.stateMachine.setState("idle");
+      return;
+    }
+
     const distanceX = player.x - this.x;
     const distanceY = player.y - this.y;
     const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);

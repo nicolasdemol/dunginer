@@ -17,4 +17,8 @@ export class AttackState extends State {
       this.character.stateMachine.setState("idle");
     }
   }
+
+  exit() {
+    // No cleanup needed for death state
+  }
 }

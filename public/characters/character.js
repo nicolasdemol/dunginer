@@ -26,6 +26,7 @@ export class Character {
     this.animationManager = new AnimationManager(this);
     this.direction = "down";
     this.collisionLayer = "default";
+    this.isDead = false;
     this.type = type;
   }
 
@@ -73,6 +74,7 @@ export class Character {
   }
 
   die() {
+    this.isDead = true;
     console.log(`${this.constructor.name} is dead`);
   }
 
